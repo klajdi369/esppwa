@@ -10,7 +10,8 @@
           "/favicon.ico",
           "/index.html",
           "/*.css",
-          "/*.js"
+          "/*.js",
+		  "https://cors-anywhere.herokuapp.com/https://klajdi.ga/pwa/dht11.json"
         ]
       }
     }, {
