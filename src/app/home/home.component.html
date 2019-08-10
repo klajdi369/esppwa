@@ -1,5 +1,13 @@
-<br>{{dhtData?.humidity}}%
-<br>{{dhtData?.tempC}}C
-<br>{{dhtData?.tempF}}F
+<br>{{dhtData?.humidity == null ? 0 : dhtData?.humidity}}%
+<br>{{dhtData?.tempC == null ? 0 : dhtData?.tempC}}C
+<br>{{dhtData?.tempF == null ? 0 : dhtData?.tempF}}F
 <br>Last updated: {{dhtData?.time*1000 | date: 'EEE HH:mm:ss'}}
 <!-- <br>Last Updated {{date}} seconds ago -->
+<div id="tempC" class="dhtSensorData"></div>
+<div id="humidity" class="dhtSensorData"></div>
+
+{{ initProgressBar("#tempC", 0, 50, dhtData?.tempC == null ? 0 : dhtData?.tempC) }}
+<!-- {{ initProgressBar("#humidity", 20, 95, 48)}} -->
+<!-- <script>
+
+</script> -->

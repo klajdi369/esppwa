@@ -22,10 +22,12 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/manifest.webmanifest"
+              "src/manifest.webmanifest",
+			  "src/assets/progressbar.js"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+			  "src/app/home/home.component.css"
             ],
             "scripts": []
           },

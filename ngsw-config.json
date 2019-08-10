@@ -1,6 +1,20 @@
 {
   "$schema": "./node_modules/@angular/service-worker/config/schema.json",
   "index": "/index.html",
+  "dataGroups": [
+    {
+      "name": "sensorData",
+      "urls": [
+        "https://cors-anywhere.herokuapp.com/https://klajdi.ga/pwa/dht11.json"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "1h",
+        "timeout": "10s"
+      }
+    }
+  ],
   "assetGroups": [
     {
       "name": "app",
@@ -10,8 +24,7 @@
           "/favicon.ico",
           "/index.html",
           "/*.css",
-          "/*.js",
-		  "https://cors-anywhere.herokuapp.com/https://klajdi.ga/pwa/dht11.json"
+          "/*.js"
         ]
       }
     }, {
