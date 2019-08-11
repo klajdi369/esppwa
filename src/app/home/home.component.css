@@ -1,6 +1,7 @@
 .dhtSensorData {
-  margin: 20px;
-  width: 300px;
-  height: 300px;
+  display: inline-block;
+  margin: 5%;
+  width: 40%;
+  height: 40%;
   position: relative;
 }

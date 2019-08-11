@@ -5,8 +5,8 @@ declare const ProgressBar: any;
 
 @Component({
   selector: 'home',
-  templateUrl: `./home.component.html`
-  //styleUrls: [ './home.component.css' ]
+  templateUrl: `./home.component.html`,
+  styleUrls: [ './home.component.css' ]
 })
 export class HomeComponent  {
   @Input() name: string;
@@ -41,6 +41,7 @@ export class HomeComponent  {
       color: '#aaa',
       strokeWidth: 4,
       trailWidth: 5,
+      trailColor: '#780116',
       easing: 'easeInOut',
       duration: 1500,
       text: {
@@ -91,6 +92,9 @@ export class HomeComponent  {
     this.bar[container].animate(progress * multiplier * 0.75);
   }
 
+  convertTemp(event) {
+    window.alert(event.target.closest('div').id);
+  }
   ngOnInit(){
     this.getDht();
   }
