@@ -1,15 +1,49 @@
-<br>{{dhtData?.humidity == null ? 0 : dhtData?.humidity}}%
+<div class="homeWrapper">
+<!-- <br>{{dhtData?.humidity == null ? 0 : dhtData?.humidity}}%
 <br>{{dhtData?.tempC == null ? 0 : dhtData?.tempC}}C
-<br>{{dhtData?.tempF == null ? 0 : dhtData?.tempF}}F
-<h3>Last updated: {{dhtData?.time*1000 | date: 'EEE HH:mm:ss'}}</h3>
+<br>{{dhtData?.tempF == null ? 0 : dhtData?.tempF}}F -->
+<h3 style="text-align:center;">Last updated: {{dhtData?.time*1000 | date: 'EEE HH:mm:ss'}}</h3>
 <!-- <br>Last Updated {{date}} seconds ago -->
 <br>
-<div id="tempC" class="dhtSensorData" (click)="convertTemp($event)"></div>
-<div id="humidity" class="dhtSensorData"></div>
+<div id="tempC" class="dhtSensorData" (click)="convertTemp($event)">
+    <div [ngStyle]="getOverlayStyle(125)">{{ tempC || 0 }}</div>
+    <round-progress
+    [current]="(tempC - tempCmin) * 0.75"
+    [max]="50 - tempCmin"
+    [color]="'#B21111'"
+    [background]="'#780116'"
+    [radius]="125"
+    [stroke]="20"
+    [semicircle]="false"
+    [rounded]="false"
+    [clockwise]="true"
+    [responsive]="true"
+    [duration]="1500"
+    [animation]="'easeInOutQuart'"
+    [animationDelay]="0"
+    style="transform: rotate(-135deg);"></round-progress>
+</div>
+<div id="humidity" class="dhtSensorData" (click)="convertTemp($event)">
+        <div [ngStyle]="getOverlayStyle(125)">{{ humidity || 0 }}</div>
+    <round-progress
+    [current]="(humidity - humiditymin) * 0.75"
+    [max]="90 - humiditymin"
+    [color]="'#B21111'"
+    [background]="'#780116'"
+    [radius]="125"
+    [stroke]="20"
+    [semicircle]="false"
+    [rounded]="false"
+    [clockwise]="true"
+    [responsive]="true"
+    [duration]="1500"
+    [animation]="'easeInOutQuart'"
+    [animationDelay]="0"
+    style="transform: rotate(-135deg);"></round-progress>
+</div>
 <br>
 <!-- Initialize min/max with DHT11 range -->
-{{ initProgressBar("#tempC", 0, 50, dhtData?.tempC == null ? 0 : dhtData?.tempC) }}
-{{ initProgressBar("#humidity", 20, 90, dhtData?.humidity == null ? 20 : dhtData?.humidity) }}
-<!-- <script>
+<!-- {{ initProgressBar("#tempC", 0, 50, dhtData?.tempC == null ? 0 : dhtData?.tempC) }} -->
+<!-- {{ initProgressBar("#humidity", 20, 90, dhtData?.humidity == null ? 20 : dhtData?.humidity) }} -->
 
-</script> -->
+</div>
