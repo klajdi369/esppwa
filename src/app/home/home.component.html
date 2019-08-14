@@ -6,12 +6,15 @@
 <!-- <br>Last Updated {{date}} seconds ago -->
 <br>
 <div id="tempC" class="dhtSensorData" (click)="convertTemp($event)">
-    <div [ngStyle]="getOverlayStyle(125)">{{ tempC || 0 }}</div>
+    <div [ngStyle]="getOverlayStyle(125)">
+        <i class="fa fa-thermometer-half" aria-hidden="true"> </i>
+        {{ tempText || 0 }} {{tempUnit}}
+    </div>
     <round-progress
     [current]="(tempC - tempCmin) * 0.75"
     [max]="50 - tempCmin"
     [color]="'#B21111'"
-    [background]="'#780116'"
+    [background]="'#6B0504'"
     [radius]="125"
     [stroke]="20"
     [semicircle]="false"
@@ -23,13 +26,16 @@
     [animationDelay]="0"
     style="transform: rotate(-135deg);"></round-progress>
 </div>
-<div id="humidity" class="dhtSensorData" (click)="convertTemp($event)">
-        <div [ngStyle]="getOverlayStyle(125)">{{ humidity || 0 }}</div>
+<div id="humidity" class="dhtSensorData">
+        <div [ngStyle]="getOverlayStyle(125)">
+            <i class="fa fa-tint" aria-hidden="true"> </i>
+            {{ humidity || 0 }} %
+        </div>
     <round-progress
     [current]="(humidity - humiditymin) * 0.75"
     [max]="90 - humiditymin"
     [color]="'#B21111'"
-    [background]="'#780116'"
+    [background]="'#6B0504'"
     [radius]="125"
     [stroke]="20"
     [semicircle]="false"

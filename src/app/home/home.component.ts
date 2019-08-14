@@ -22,11 +22,13 @@ export class HomeComponent  {
   tempCmin: number = 0;
   humiditymin: number = 20;
   tempC: number;
+  tempText: number = this.tempC;
+  tempUnit: string = '*C';
   humidity: number;
   getDht() {
     this.http.get(this.dhtApi).subscribe((res)=>{
       this.dhtData = res;
-      this.tempC = this.dhtData.tempC == null ? this.tempCmin : this.dhtData.tempC;
+      this.tempC = this.tempText = this.dhtData.tempC == null ? this.tempCmin : this.dhtData.tempC;
       this.humidity = this.dhtData.humidity == null ? this.humiditymin : this.dhtData.humidity;
     });
     
@@ -64,7 +66,14 @@ export class HomeComponent  {
   }
 
   convertTemp(event) {
-    window.alert(event.target.closest('div').id);
+    //window.alert(event.target.closest('div').id);
+    if(this.tempUnit == '*C') {
+      this.tempUnit = '*F';
+      this.tempText = parseFloat((this.tempText * 1.8 + 32).toFixed(2));
+     } else {
+      this.tempUnit = '*C';
+      this.tempText = parseFloat(((this.tempText - 32) / 1.8).toFixed(2));
+     }
   }
 
 getOverlayStyle(radius) {
@@ -83,12 +92,17 @@ getOverlayStyle(radius) {
 }
 
   ngOnInit(){
+
+    //Append support arc for progress bars
     var dhtSensorData = document.getElementsByClassName("dhtSensorData");
     for(var i=0;i<dhtSensorData.length; i++) {
       var queryId = '#' + dhtSensorData[i]['id'];
       this.appendSupportArc(queryId, 75, 100, 125-20/2, 125)
     }
     this.getDht();
+    //Periodically update data
+    setInterval(()=> {
+      this.getDht(); },30000);
   }
 }
 
