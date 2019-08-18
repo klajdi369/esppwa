@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 // import { RoundProgressModule } from 'angular-svg-round-progressbar';
-declare const ProgressBar: any;
 
 
 @Component({

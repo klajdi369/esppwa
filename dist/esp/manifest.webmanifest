@@ -1,9 +1,10 @@
 {
-  "name": "esp",
-  "short_name": "esp",
-  "theme_color": "#1976d2",
-  "background_color": "#fafafa",
-  "display": "standalone",
+  "name": "ESP Weather",
+  "short_name": "ESPPWA",
+  "theme_color": "#500000",
+  "background_color": "#710000",
+  "display": "fullscreen",
+  "orientation": "portrait",
   "scope": "/",
   "start_url": "/",
   "icons": [
