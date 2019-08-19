@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1566133427412,
+  "timestamp": 1566220582657,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -10,8 +10,8 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-es2015.0149c0dedf41375d5275.js",
-        "/main-es5.5a914019e597421f0159.js",
+        "/main-es2015.e85c7ed86fe81136948b.js",
+        "/main-es5.a28f7d84724c7c05beb9.js",
         "/polyfills-es2015.e4a1185e6871d06f842f.js",
         "/polyfills-es5.72845f0db871433d1fef.js",
         "/runtime-es2015.10a1f01eef199006286d.js",
@@ -25,6 +25,7 @@
       "installMode": "lazy",
       "updateMode": "prefetch",
       "urls": [
+        "/assets/icons/apple-touch-icon.png",
         "/assets/icons/icon-128x128.png",
         "/assets/icons/icon-144x144.png",
         "/assets/icons/icon-152x152.png",
@@ -51,6 +52,7 @@
     }
   ],
   "hashTable": {
+    "/assets/icons/apple-touch-icon.png": "57f82d6df04ea56ba51e48bb132d5f02eafe2be7",
     "/assets/icons/icon-128x128.png": "ef8f5da7647c04ea97ef224571f885c146c8f847",
     "/assets/icons/icon-144x144.png": "f99f3fb8f2af12ecc908bca4bf3741b05c4ea79d",
     "/assets/icons/icon-152x152.png": "a77b3a32908d508186206623640c45f799abd98f",
@@ -59,10 +61,10 @@
     "/assets/icons/icon-512x512.png": "96ae1976e45e50e74a2f0cae298883079040fd0d",
     "/assets/icons/icon-72x72.png": "4fec0ff8f619c059cb3941385e5175f5f6572109",
     "/assets/icons/icon-96x96.png": "f89ca976ab18acc2c06d0f372c44e855bc39ea7f",
-    "/favicon.ico": "c903d0ad7850a7d24cbec787ac4450a5471d49c5",
-    "/index.html": "17b589d414490293bb8994e3fd0f04de3a86a594",
-    "/main-es2015.0149c0dedf41375d5275.js": "fe704b9d83e17fda0c6083ab915a805e10efe7d0",
-    "/main-es5.5a914019e597421f0159.js": "15078e4b691ced2186d6b1afa4b04d0b6897cc02",
+    "/favicon.ico": "99da76d8910e63f9d4b255dd8d3164d7ed2ad380",
+    "/index.html": "1ffc6ca4a021949ae3604294d30a28626ef21653",
+    "/main-es2015.e85c7ed86fe81136948b.js": "1dd421dcdb695a50032c4046ee64c2625a6472d3",
+    "/main-es5.a28f7d84724c7c05beb9.js": "944b9270a2c3539c716df347fbd2383dc2659b3d",
     "/polyfills-es2015.e4a1185e6871d06f842f.js": "a514da8731833287c9583044e9d512d74c45312a",
     "/polyfills-es5.72845f0db871433d1fef.js": "7e1b38fcb73a9607657630e25f278302170f96dc",
     "/runtime-es2015.10a1f01eef199006286d.js": "b62956c2192bfe5516d6374e753773901ed50ec5",
