@@ -5,7 +5,7 @@
 
 
 
-#define DHTPIN 2
+#define DHTPIN 14
 #define DHTSTATUS 12
 #define DHTTYPE DHT11   // DHT 11 
 
@@ -23,12 +23,14 @@ float g_h, g_t, g_f;
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
+  pinMode(16, OUTPUT);
+  pinMode(2, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(4, OUTPUT);
   pinMode(0, OUTPUT);
-  pinMode(16, OUTPUT);
   pinMode(DHTSTATUS, OUTPUT); //Pin for DHT11 status
+  digitalWrite(LED_BUILTIN, HIGH); //Turn off builtin LED
+  digitalWrite(2, LOW); //Output inverted
   Serial.begin(115200);
   dht.begin();
   delay(10);
@@ -54,6 +56,7 @@ void setup() {
   g_sTime1 = millis();
   Serial.println(g_sTime1);
   Serial.println("-----------------------------------");
+  digitalWrite(2, HIGH); //Output inverted
 }
 
 void loop() {
@@ -78,10 +81,8 @@ void loop() {
   if (millis() - g_sTime1 > 15000) {
     g_sTime1 = millis();
     Serial.println(LED_BUILTIN);
-    digitalWrite(LED_BUILTIN, HIGH);
     sendGet(g_h, g_t, g_f);
     digitalWrite(DHTSTATUS, LOW);
-    digitalWrite(LED_BUILTIN, LOW);
   }
   
   request();
