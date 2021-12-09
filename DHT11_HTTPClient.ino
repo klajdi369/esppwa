@@ -16,7 +16,7 @@ DHT dht(DHTPIN, DHTTYPE);
 const char* ssid     = "Klajdi";
 const char* password = "klajdi369";
 
-const char* host = "as.klajdi.ga";
+const char* host = "as.klajdi.net";
 
 int g_sTime1;
 float g_h, g_t, g_f;
@@ -97,7 +97,7 @@ void loop() {
 void request() {
 
     HTTPClient http2;
-    http2.begin("http://as.klajdi.ga:80/espfilereq.php?request=1");
+    http2.begin("http://as.klajdi.net:80/espfilereq.php?request=1");
     http2.addHeader("Content-Type", "text/plain");  //Specify content-type header
    
     int httpCode = http2.GET();   //Send the request
