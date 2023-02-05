@@ -1,12 +1,12 @@
 #include <Regexp.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
 #include <DHT.h>
 
 
 
-#define DHTPIN 14
-#define DHTSTATUS 12
+#define DHTPIN 16
+#define DHTSTATUS 4
 #define DHTTYPE DHT11   // DHT 11 
 
 
@@ -22,15 +22,7 @@ int g_sTime1;
 float g_h, g_t, g_f;
 
 void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(16, OUTPUT);
-  pinMode(2, OUTPUT);
-  pinMode(5, OUTPUT);
-  pinMode(4, OUTPUT);
-  pinMode(0, OUTPUT);
   pinMode(DHTSTATUS, OUTPUT); //Pin for DHT11 status
-  digitalWrite(LED_BUILTIN, HIGH); //Turn off builtin LED
-  digitalWrite(2, LOW); //Output inverted
   Serial.begin(115200);
   dht.begin();
   delay(10);
@@ -56,7 +48,6 @@ void setup() {
   g_sTime1 = millis();
   Serial.println(g_sTime1);
   Serial.println("-----------------------------------");
-  digitalWrite(2, HIGH); //Output inverted
 }
 
 void loop() {
@@ -88,9 +79,6 @@ void loop() {
   request();
   
   delay(1000);
-
-
-  
 }
 
 
