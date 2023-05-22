@@ -20,6 +20,8 @@ const char* host = "as.klajdi.net";
 
 int g_sTime1;
 float g_h, g_t, g_f;
+float failedTemps[6144];
+int failedTempsIndex = 0;
 
 void setup() {
   pinMode(DHTSTATUS, OUTPUT); //Pin for DHT11 status
@@ -123,8 +125,17 @@ void sendGet(float data1, float data2, float data3) {
   WiFiClient client;
   const int httpPort = 80;
   if (!client.connect(host, httpPort)) { //works!
+    failedTemps[failedTempsIndex++] = data2;
     Serial.println("connection failed");
+    Serial.println(failedTempsIndex);
     return;
+  } else if(failedTempsIndex > 0) {
+    delay(60000);
+    int tempIndex = failedTempsIndex;
+    failedTempsIndex = 0;
+    for(int i = 0; i < tempIndex; i++) {
+      sendGet(0, failedTemps[i], 0);
+    }
   }
 
   // We now create a URI for the request
