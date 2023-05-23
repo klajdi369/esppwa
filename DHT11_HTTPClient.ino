@@ -22,6 +22,7 @@ const char* host = "as.klajdi.net";
 int g_sTime1;
 float g_h, g_t, g_f;
 float failedTemps[6144];
+unsigned int failedTempsTimes[6144];
 int failedTempsIndex = 0;
 const char* ntpServer = "pool.ntp.org";
 
@@ -130,16 +131,18 @@ void sendGet(float data1, float data2, float data3, unsigned long epochTime) {
   WiFiClient client;
   const int httpPort = 80;
   if (!client.connect(host, httpPort)) { //works!
-    failedTemps[failedTempsIndex++] = data2;
+    failedTemps[failedTempsIndex] = data2;
+    failedTempsTimes[failedTempsIndex] = getTime();
+    failedTempsIndex++;
     Serial.println("connection failed");
     Serial.println(failedTempsIndex);
+    delay(60000);
     return;
   } else if(failedTempsIndex > 0) {
-    delay(60000);
     int tempIndex = failedTempsIndex;
     failedTempsIndex = 0;
     for(int i = 0; i < tempIndex; i++) {
-      sendGet(0, failedTemps[i], 0, getTime());
+      sendGet(0, failedTemps[i], 0, failedTempsTimes[i]);
     }
   }
 
