@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <DHT.h>
+#include "time.h"
 
 
 
@@ -22,6 +23,7 @@ int g_sTime1;
 float g_h, g_t, g_f;
 float failedTemps[6144];
 int failedTempsIndex = 0;
+const char* ntpServer = "pool.ntp.org";
 
 void setup() {
   pinMode(DHTSTATUS, OUTPUT); //Pin for DHT11 status
@@ -47,6 +49,9 @@ void setup() {
   Serial.println("WiFi connected");  
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+
+  configTime(0, 0, ntpServer);
+
   g_sTime1 = millis();
   Serial.println(g_sTime1);
   Serial.println("-----------------------------------");
@@ -74,7 +79,7 @@ void loop() {
   if (millis() - g_sTime1 > 15000) {
     g_sTime1 = millis();
     Serial.println(LED_BUILTIN);
-    sendGet(g_h, g_t, g_f);
+    sendGet(g_h, g_t, g_f, 0);
     digitalWrite(DHTSTATUS, LOW);
   }
   
@@ -117,7 +122,7 @@ void request() {
 
 }
 
-void sendGet(float data1, float data2, float data3) {
+void sendGet(float data1, float data2, float data3, unsigned long epochTime) {
   Serial.print("connecting to ");
   Serial.println(host);
 
@@ -134,7 +139,7 @@ void sendGet(float data1, float data2, float data3) {
     int tempIndex = failedTempsIndex;
     failedTempsIndex = 0;
     for(int i = 0; i < tempIndex; i++) {
-      sendGet(0, failedTemps[i], 0);
+      sendGet(0, failedTemps[i], 0, getTime());
     }
   }
 
@@ -146,6 +151,10 @@ void sendGet(float data1, float data2, float data3) {
   url += data2;
   url += "&data3="; 
   url += data3;
+  if(epochTime != 0) {
+    url += "&time=";
+    url += epochTime;
+  }
 
   
   Serial.print("Sending data to URL: ");
@@ -158,3 +167,15 @@ void sendGet(float data1, float data2, float data3) {
   Serial.println("closing connection");
   Serial.println("Requesting data");
 }
+
+unsigned long getTime() {
+  time_t now;
+  struct tm timeinfo;
+  if (!getLocalTime(&timeinfo)) {
+    return(0);
+  }
+  time(&now);
+  return now;
+}
+
+///  WiFi.begin("Wokwi-GUEST", "", 6);
