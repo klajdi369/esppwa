@@ -42,7 +42,8 @@ void setup() {
 
   WiFi.begin(ssid, password); //works!
 
-  while (WiFi.status() != WL_CONNECTED) {
+  int wifiStartTime = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - wifiStartTime <= 9000) {
     delay(500);
     Serial.print(".");
   }
@@ -146,6 +147,11 @@ void sendGet(float data1, float data2, float data3, unsigned long epochTime) {
     failedTemps[failedTempsIndex] = data2;
     failedTempsTimes[failedTempsIndex] = getTime();
     failedTempsIndex++;
+    // Write updated values to EEPROM
+    EEPROM.put(0, failedTempsIndex);
+    EEPROM.put(sizeof(failedTempsIndex), failedTemps);
+    EEPROM.put(sizeof(failedTempsIndex) + sizeof(failedTemps), failedTempsTimes);
+    EEPROM.commit();
     Serial.println("connection failed");
     Serial.println(failedTempsIndex);
     ///delay(60000);
@@ -155,7 +161,12 @@ void sendGet(float data1, float data2, float data3, unsigned long epochTime) {
     failedTempsIndex = 0;
     for(int i = 0; i < tempIndex; i++) {
       sendGet(0, failedTemps[i], 0, failedTempsTimes[i]);
+      Serial.println(failedTempsIndex);
     }
+    // Write updated failedTempsIndex to EEPROM
+    EEPROM.put(0, failedTempsIndex);
+    EEPROM.commit();
+    Serial.println("Commited");
   }
 
   // We now create a URI for the request
