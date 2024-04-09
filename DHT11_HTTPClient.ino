@@ -3,14 +3,15 @@
 #include <HTTPClient.h>
 #include <DHT.h>
 #include "time.h"
+#include <EEPROM.h>
 
 
 
 #define DHTPIN 16
 #define DHTSTATUS 4
-#define DHTTYPE DHT11   // DHT 11 
+#define DHTTYPE DHT22   // DHT 11 
 
-
+#define EEPROM_SIZE (900*2)+1
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -21,9 +22,9 @@ const char* host = "as.klajdi.net";
 
 int g_sTime1;
 float g_h, g_t, g_f;
-float failedTemps[6144];
-unsigned int failedTempsTimes[6144];
-int failedTempsIndex = 0;
+RTC_DATA_ATTR float failedTemps[900];
+RTC_DATA_ATTR unsigned int failedTempsTimes[900];
+RTC_DATA_ATTR int failedTempsIndex = 0;
 const char* ntpServer = "pool.ntp.org";
 
 void setup() {
@@ -56,6 +57,15 @@ void setup() {
   g_sTime1 = millis();
   Serial.println(g_sTime1);
   Serial.println("-----------------------------------");
+
+  // Initialize EEPROM
+  EEPROM.begin(EEPROM_SIZE);
+
+  // Read failedTempsIndex from EEPROM
+  EEPROM.get(0, failedTempsIndex);
+  // Read failedTemps and failedTempsTimes from EEPROM
+  EEPROM.get(sizeof(failedTempsIndex), failedTemps);
+  EEPROM.get(sizeof(failedTempsIndex) + sizeof(failedTemps), failedTempsTimes);
 }
 
 void loop() {
@@ -77,16 +87,18 @@ void loop() {
   
 //  Serial.println(sTime1);
   
-  if (millis() - g_sTime1 > 15000) {
-    g_sTime1 = millis();
-    Serial.println(LED_BUILTIN);
-    sendGet(g_h, g_t, g_f, 0);
-    digitalWrite(DHTSTATUS, LOW);
-  }
+  g_sTime1 = millis();
+  sendGet(g_h, g_t, g_f, 0);
+  digitalWrite(DHTSTATUS, LOW);
+    
+  // Disconnect from WiFi and turn off the module
+  WiFi.disconnect();
+  WiFi.mode(WIFI_OFF);
   
-  request();
+  ///request();
   
   delay(1000);
+  esp_deep_sleep(300 * 1000000); /// seconds * useconds
 }
 
 
@@ -130,13 +142,13 @@ void sendGet(float data1, float data2, float data3, unsigned long epochTime) {
   // Use WiFiClient class to create TCP connections
   WiFiClient client;
   const int httpPort = 80;
-  if (!client.connect(host, httpPort)) { //works!
+  if (!client.connect(host, httpPort)) { //Connection is not available!
     failedTemps[failedTempsIndex] = data2;
     failedTempsTimes[failedTempsIndex] = getTime();
     failedTempsIndex++;
     Serial.println("connection failed");
     Serial.println(failedTempsIndex);
-    delay(60000);
+    ///delay(60000);
     return;
   } else if(failedTempsIndex > 0) {
     int tempIndex = failedTempsIndex;
