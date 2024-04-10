@@ -43,7 +43,7 @@ void setup() {
   WiFi.begin(ssid, password); //works!
 
   int wifiStartTime = millis();
-  while (WiFi.status() != WL_CONNECTED && millis() - wifiStartTime <= 9000) {
+  while (WiFi.status() != WL_CONNECTED && millis() - wifiStartTime <= 3000) {
     delay(500);
     Serial.print(".");
   }
@@ -55,8 +55,6 @@ void setup() {
 
   configTime(0, 0, ntpServer);
 
-  g_sTime1 = millis();
-  Serial.println(g_sTime1);
   Serial.println("-----------------------------------");
 
   // Initialize EEPROM
@@ -84,21 +82,16 @@ void loop() {
     return;
   }
 
-
-  
-//  Serial.println(sTime1);
-  
-  g_sTime1 = millis();
   sendGet(g_h, g_t, g_f, 0);
   digitalWrite(DHTSTATUS, LOW);
-    
-  // Disconnect from WiFi and turn off the module
-  WiFi.disconnect();
-  WiFi.mode(WIFI_OFF);
   
   ///request();
   
-  delay(1000);
+  Serial.println(getTime());
+  
+  // Disconnect from WiFi and turn off the module
+  WiFi.disconnect();
+  WiFi.mode(WIFI_OFF);
   esp_deep_sleep(300 * 1000000); /// seconds * useconds
 }
 
@@ -140,10 +133,26 @@ void sendGet(float data1, float data2, float data3, unsigned long epochTime) {
   Serial.print("connecting to ");
   Serial.println(host);
 
-  // Use WiFiClient class to create TCP connections
-  WiFiClient client;
-  const int httpPort = 80;
-  if (!client.connect(host, httpPort)) { //Connection is not available!
+  // Use HTTPClient class to create HTTP connections
+  HTTPClient http;
+  String url = "http://";
+  url += host;
+  url += "/esp.php";
+  url += "?data1=";
+  url += data1;
+  url += "&data2=";
+  url += data2;
+  url += "&data3=";
+  url += data3;
+  if (epochTime != 0) {
+    url += "&time=";
+    url += epochTime;
+  }
+
+  http.begin(url);
+
+  int httpCode = http.GET();
+  if (httpCode <= 0) {
     failedTemps[failedTempsIndex] = data2;
     failedTempsTimes[failedTempsIndex] = getTime();
     failedTempsIndex++;
@@ -154,42 +163,21 @@ void sendGet(float data1, float data2, float data3, unsigned long epochTime) {
     EEPROM.commit();
     Serial.println("connection failed");
     Serial.println(failedTempsIndex);
-    ///delay(60000);
-    return;
-  } else if(failedTempsIndex > 0) {
+  } else if (failedTempsIndex > 0) {
     int tempIndex = failedTempsIndex;
     failedTempsIndex = 0;
-    for(int i = 0; i < tempIndex; i++) {
+    for (int i = 0; i < tempIndex; i++) {
       sendGet(0, failedTemps[i], 0, failedTempsTimes[i]);
       Serial.println(failedTempsIndex);
     }
     // Write updated failedTempsIndex to EEPROM
     EEPROM.put(0, failedTempsIndex);
     EEPROM.commit();
-    Serial.println("Commited");
+    Serial.println("Committed");
   }
 
-  // We now create a URI for the request
-  String url = "/esp.php";
-  url += "?data1=";
-  url += data1;
-  url += "&data2=";
-  url += data2;
-  url += "&data3="; 
-  url += data3;
-  if(epochTime != 0) {
-    url += "&time=";
-    url += epochTime;
-  }
-
-  
-  Serial.print("Sending data to URL: ");
   Serial.println(url);
-
-//   This will send the request to the server
-  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-               "Host: " + host + "\r\n" + 
-               "Connection: close+-\r\n\r\n");
+  http.end();
   Serial.println("closing connection");
   Serial.println("Requesting data");
 }
@@ -197,11 +185,27 @@ void sendGet(float data1, float data2, float data3, unsigned long epochTime) {
 unsigned long getTime() {
   time_t now;
   struct tm timeinfo;
-  if (!getLocalTime(&timeinfo)) {
-    return(0);
+  if (getLocalTime(&timeinfo)) {
+    // NTP time is available
+    time(&now);
+    // Store the current timestamp in EEPROM
+    EEPROM.put(sizeof(failedTempsIndex) + sizeof(failedTemps) + sizeof(failedTempsTimes), now);
+    EEPROM.commit();
+    return now;
+  } else {
+    // NTP time is not available
+    // Retrieve the last stored timestamp from EEPROM
+    unsigned long lastStoredTime;
+    EEPROM.get(sizeof(failedTempsIndex) + sizeof(failedTemps) + sizeof(failedTempsTimes), lastStoredTime);
+    if (lastStoredTime == 0) {
+      // No previous timestamp stored, return 0
+      return 0;
+    }
+    // Calculate the elapsed time since the last stored timestamp
+    unsigned long elapsedTime = millis() / 1000; // Convert milliseconds to seconds
+    // Return the last stored timestamp plus the elapsed time
+    return lastStoredTime + elapsedTime;
   }
-  time(&now);
-  return now;
 }
 
 ///  WiFi.begin("Wokwi-GUEST", "", 6);
